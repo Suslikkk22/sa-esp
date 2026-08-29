@@ -3,13 +3,18 @@ project(AmazingTreasureESP)
 
 set(CMAKE_CXX_STANDARD 17)
 
-# Указываем, что собираем динамическую библиотеку (будущую .asi)
+# Ищем папку plugin-sdk, которую только что склонировали
+set(PLUGIN_SDK_DIR "${CMAKE_CURRENT_SOURCE_DIR}/plugin-sdk")
+
+# Добавляем пути к заголовочным файлам Plugin-SDK
+include_directories(${PLUGIN_SDK_DIR}/shared)
+include_directories(${PLUGIN_SDK_DIR}/plugin_sa)
+include_directories(${PLUGIN_SDK_DIR}/game_sa)
+
+# Создаем динамическую библиотеку (наш будущий .asi)
 add_library(AmazingTreasureESP SHARED main.cpp)
 
-# Если у тебя есть папка plugin-sdk, подключаем её инклюды
-target_include_directories(AmazingTreasureESP PRIVATE plugin-sdk)
-
-# Меняем расширение с .dll на .asi прямо при сборке
+# Превращаем .dll в .asi прямо при сборке
 set_target_properties(AmazingTreasureESP PROPERTIES
     SUFFIX ".asi"
     PREFIX ""
