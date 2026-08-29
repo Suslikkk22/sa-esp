@@ -14,25 +14,9 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Remove old plugin-sdk if exists
-      shell: pwsh
-      run: |
-        if (Test-Path "plugin-sdk") {
-          Remove-Item -Recurse -Force "plugin-sdk"
-        }
-
-    - name: Clone plugin-sdk
-      run: |
-        git clone --depth 1 https://github.com/DK22Pac/plugin-sdk.git plugin-sdk
-
-    - name: Configure CMake
-      run: cmake -B build -S . -A Win32 -DCMAKE_CXX_STANDARD=20 -DCMAKE_CXX_STANDARD_REQUIRED=ON
-
-    - name: Build Project
-      run: cmake --build build --config Release
-
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
+    - name: Download stable plugin-sdk
+      uses: robinraju/release-downloader@v10
       with:
-        name: AmazingTreasureESP-ASI
-        path: build/Release/*.asi
+        repository: "DK22Pac/plugin-sdk"
+        tag: "latest" # Или скачаем через архив по прямой ссылке ниже
+        out-file-path: "plugin-sdk"
