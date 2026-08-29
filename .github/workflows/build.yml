@@ -16,11 +16,10 @@ jobs:
         repository: DK22Pac/plugin-sdk
         path: plugin-sdk
 
-    # Устанавливаем MSBuild и компоненты C++
+    # Используем актуальную версию экшена для настройки MSBuild
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    # CMake сам найдет Visual Studio 2022 и настроит архитектуру Win32 (x86)
     - name: Configure CMake
       run: cmake -S . -B build -G "Visual Studio 17 2022" -A Win32
 
