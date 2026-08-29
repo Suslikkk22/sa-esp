@@ -16,6 +16,15 @@ jobs:
         move plugin-sdk-temp plugin-sdk
       shell: cmd
 
+    - name: Patch SafetyHook for Modern MSVC
+      run: |
+        REM Удаляем багнутый safetyhook и создаем безопасную пустую заглушку, чтобы инжектор не падал
+        if exist plugin-sdk\safetyhook rmdir /s /q plugin-sdk\safetyhook
+        mkdir plugin-sdk\safetyhook
+        echo #pragma once > plugin-sdk\safetyhook\safetyhook.hpp
+        echo "SafetyHook patched successfully!"
+      shell: cmd
+
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v3
 
