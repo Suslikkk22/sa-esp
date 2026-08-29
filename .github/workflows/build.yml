@@ -19,6 +19,13 @@ jobs:
         )
       shell: cmd
 
+    - name: Purge Buggy SafetyHook
+      run: |
+        if exist plugin-sdk\plugin-sdk\safetyhook rmdir /s /q plugin-sdk\plugin-sdk\safetyhook
+        if exist plugin-sdk\safetyhook rmdir /s /q plugin-sdk\safetyhook
+        echo "SafetyHook has been successfully exterminated!"
+      shell: cmd
+
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v3
 
