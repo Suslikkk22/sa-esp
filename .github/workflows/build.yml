@@ -1,29 +1,38 @@
 name: Build ASI Plugin
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
 
 jobs:
   build:
-    runs-on: windows-2022
+    runs-on: windows-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Clone plugin-sdk
-      run: git clone --depth 1 https://github.com/DK22Pac/plugin-sdk.git plugin-sdk
+    - name: Remove old plugin-sdk if exists
+      shell: pwsh
+      run: |
+        if (Test-Path "plugin-sdk") {
+          Remove-Item -Recurse -Force "plugin-sdk"
+        }
 
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v2
+    - name: Clone plugin-sdk
+      run: |
+        git clone --depth 1 https://github.com/DK22Pac/plugin-sdk.git plugin-sdk
 
     - name: Configure CMake
-      run: cmake -S . -B build -G "Visual Studio 17 2022" -A Win32
+      run: cmake -B build -S . -T v142
 
     - name: Build Project
       run: cmake --build build --config Release
 
-    - name: Upload ASI Artifact
+    - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: AmazingTreasureESP
-        path: build/Release/AmazingTreasureESP.asi
+        name: AmazingTreasureESP-ASI
+        path: build/Release/*.asi
