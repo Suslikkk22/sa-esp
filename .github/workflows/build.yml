@@ -11,7 +11,12 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Clone Plugin-SDK
-      run: git clone --recursive https://github.com/DK22Pac/plugin-sdk.git plugin-sdk
+      run: |
+        if exist plugin-sdk (
+          echo "Plugin-SDK already exists, skipping clone."
+        ) else (
+          git clone --recursive https://github.com/DK22Pac/plugin-sdk.git plugin-sdk
+        )
       shell: cmd
 
     - name: Setup MSBuild
