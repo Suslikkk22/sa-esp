@@ -10,23 +10,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Clone Plugin-SDK
+    - name: Clone Plugin-SDK cleanly
       run: |
-        if exist plugin-sdk (
-          echo "Plugin-SDK already exists, skipping clone."
-        ) else (
-          git clone --recursive https://github.com/DK22Pac/plugin-sdk.git plugin-sdk
-        )
-      shell: cmd
-
-    - name: Create SafetyHook Dummy to Fix Injector
-      run: |
-        REM Создаем папки, если их нет, и подсовываем пустой заголовок-заглушку
-        mkdir plugin-sdk\safetyhook 2>nul
-        mkdir plugin-sdk\plugin-sdk\safetyhook 2>nul
-        echo /* dummy */ > plugin-sdk\safetyhook\safetyhook.hpp
-        echo /* dummy */ > plugin-sdk\plugin-sdk\safetyhook\safetyhook.hpp
-        echo "Dummy SafetyHook created successfully!"
+        git clone --recursive https://github.com/DK22Pac/plugin-sdk.git plugin-sdk-temp
+        move plugin-sdk-temp plugin-sdk
       shell: cmd
 
     - name: Setup MSBuild
