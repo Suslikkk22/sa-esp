@@ -1,35 +1,23 @@
 name: Build ASI Plugin
 
-on:
-  push:
-    branches: [ "main", "master" ]
-  pull_request:
-    branches: [ "main", "master" ]
+on: [push, pull_request]
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout Repository
+    - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Clone plugin-sdk and rollback to stable commit
-      shell: bash
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v3
+
+    - name: Configure and Build with MSBuild
       run: |
-        rm -rf plugin-sdk
-        git clone https://github.com/DK22Pac/plugin-sdk.git plugin-sdk
-        cd plugin-sdk
-        git checkout 92b45070a93cf4f9d2d0c242b57563820252613d
-
-    - name: Configure CMake
-      run: cmake -B build -S . -A Win32 -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_STANDARD_REQUIRED=ON
-
-    - name: Build Project
-      run: cmake --build build --config Release
-
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: AmazingTreasureESP-ASI
-        path: build/Release/*.asi
+        mkdir build
+        cd build
+        # Если у тебя нет CMakeLists.txt, мы можем скомпилировать через MSBuild напрямую, 
+        # но если проект использует .vcxproj, укажи путь к нему:
+        msbuild ../AmazingTreasureESP.vcxproj /p:Configuration=Release /p:Platform=Win32
+      shell: cmd
