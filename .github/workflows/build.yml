@@ -16,12 +16,12 @@ jobs:
         move plugin-sdk-temp plugin-sdk
       shell: cmd
 
-    - name: Patch SafetyHook Only
+    - name: Apply Custom Patches
       run: |
-        if exist plugin-sdk\safetyhook rmdir /s /q plugin-sdk\safetyhook
-        mkdir plugin-sdk\safetyhook
-        echo #pragma once > plugin-sdk\safetyhook\safetyhook.hpp
-        echo "SafetyHook stub created!"
+        if exist patches\hooking.hpp (
+          copy /y patches\hooking.hpp plugin-sdk\injector\hooking.hpp
+          echo "Custom hooking.hpp successfully applied!"
+        )
       shell: cmd
 
     - name: Setup MSBuild
