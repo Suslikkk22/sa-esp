@@ -10,14 +10,19 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Add MSBuild to PATH
+    - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v3
 
-    - name: Configure and Build with MSBuild
-      run: |
-        mkdir build
-        cd build
-        # Если у тебя нет CMakeLists.txt, мы можем скомпилировать через MSBuild напрямую, 
-        # но если проект использует .vcxproj, укажи путь к нему:
-        msbuild ../AmazingTreasureESP.vcxproj /p:Configuration=Release /p:Platform=Win32
+    - name: Configure with CMake
+      run: cmake -S . -B build -A Win32
       shell: cmd
+
+    - name: Build Project
+      run: cmake --build build --config Release
+      shell: cmd
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: AmazingTreasureESP-ASI
+        path: build/Release/AmazingTreasureESP.asi
