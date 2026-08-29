@@ -4,14 +4,17 @@ project(AmazingTreasureESP)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Указываем plugin-sdk как поддиректорию (если CMake жалуется, проверим путь)
-add_subdirectory(plugin-sdk)
-
+# Создаем нашу DLL библиотеку
 add_library(AmazingTreasureESP MODULE main.cpp)
 
-# В plugin-sdk для SA цель обычно называется plugin_sa или plugin
-target_link_libraries(AmazingTreasureESP PRIVATE plugin_sa)
+# Указываем пути к заголовочным файлам plugin-sdk
+target_include_directories(AmazingTreasureESP PRIVATE
+    plugin-sdk
+    plugin-sdk/shared
+    plugin-sdk/plugin_sa
+)
 
+# Устанавливаем расширение .asi и убираем префикс "lib"
 set_target_properties(AmazingTreasureESP PROPERTIES
     SUFFIX ".asi"
     PREFIX ""
