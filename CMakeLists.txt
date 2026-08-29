@@ -17,10 +17,10 @@ set_target_properties(AmazingTreasureESP PROPERTIES
     SUFFIX ".asi"
 )
 
-# ОПРЕДЕЛЯЕМ ИГРУ: Задаем макрос GTASA, чтобы plugin-sdk понял, что собираем под GTA SA
+# ОПРЕДЕЛЯЕМ ИГРУ: Задаем макрос GTASA
 target_compile_definitions(AmazingTreasureESP PRIVATE GTASA)
 
-# Подключаем пути ко всем подпапкам plugin-sdk (включая plugin_sa и game_sa)
+# Подключаем все возможные пути plugin-sdk, включая базовые типы и математику
 target_include_directories(AmazingTreasureESP PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/plugin-sdk
