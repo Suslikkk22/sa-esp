@@ -1,42 +1,29 @@
 name: Build ASI Plugin
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main, master, claude, dev ]
+  pull_request:
+    branches: [ main, master ]
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout repository with submodules
       uses: actions/checkout@v4
+      with:
+        submodules: recursive
 
-    - name: Clone Plugin-SDK cleanly
-      run: |
-        git clone --recursive https://github.com/DK22Pac/plugin-sdk.git plugin-sdk-temp
-        move plugin-sdk-temp plugin-sdk
-      shell: cmd
-
-    - name: Apply Custom Patches
-      run: |
-        if exist patches\hooking.hpp (
-          copy /y patches\hooking.hpp plugin-sdk\injector\hooking.hpp
-          echo "Custom hooking.hpp successfully applied!"
-        )
-      shell: cmd
-
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v3
-
-    - name: Configure with CMake
-      run: cmake -S . -B build -A Win32
-      shell: cmd
+    - name: Configure CMake
+      run: cmake -B build -S .
 
     - name: Build Project
       run: cmake --build build --config Release
-      shell: cmd
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: AmazingTreasureESP-ASI
-        path: build/Release/AmazingTreasureESP.asi
+        path: build/Release/*.asi
