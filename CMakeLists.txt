@@ -1,23 +1,36 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.25)
 project(AmazingTreasureESP CXX)
 
-# Жестко требуем C++20, чтобы компилятор понимал современные фичи и не падал на concepts
+# Требуем C++23 для поддержки std::expected в safetyhook
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-# ASI плагин собирается как динамическая библиотека (DLL)
-add_library(AmazingTreasureESP SHARED
+# Плагины для GTA (ASI) собираются как динамические библиотеки
+add_library(AmazingTreasureESP MODULE
     main.cpp
 )
 
-# Меняем расширение с .dll на .asi и убираем префикс "lib"
-set_target_properties(AmazingTreasureESP PROPERTIES PREFIX "")
-set_target_properties(AmazingTreasureESP PROPERTIES SUFFIX ".asi")
-
-# Подключаем все необходимые внутренние пути Plugin-SDK, чтобы компилятор видел CRGBA.h и прочее
-target_include_directories(AmazingTreasureESP PRIVATE
-    plugin-sdk
-    plugin-sdk/shared
-    plugin-sdk/injector
-    plugin-sdk/game_sa
+# Переименовываем библиотеку в .asi расширение вместо .dll
+set_target_properties(AmazingTreasureESP PROPERTIES
+    PREFIX ""
+    SUFFIX ".asi"
 )
+
+# Подключаем пути к заголовочным файлам plugin-sdk, shared и safetyhook
+target_include_directories(AmazingTreasureESP PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/plugin-sdk
+    ${CMAKE_CURRENT_SOURCE_DIR}/plugin-sdk/shared
+    ${CMAKE_CURRENT_SOURCE_DIR}/plugin-sdk/safetyhook
+    ${CMAKE_CURRENT_SOURCE_DIR}/plugin-sdk/game_sa
+)
+
+# Дополнительные флаги для компилятора MSVC (на Windows)
+if(MSVC)
+    target_compile_options(AmazingTreasureESP PRIVATE 
+        /W3 
+        /Zc:__cplusplus 
+        /Zc:preprocessor
+    )
+endif()
