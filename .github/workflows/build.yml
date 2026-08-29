@@ -23,7 +23,7 @@ jobs:
       uses: microsoft/setup-msbuild@v3
 
     - name: Configure with CMake
-      run: cmake -S . -B build -A Win32 -T v141
+      run: cmake -S . -B build -A Win32
       shell: cmd
 
     - name: Build Project
