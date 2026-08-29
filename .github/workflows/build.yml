@@ -14,16 +14,20 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Clean and Clone plugin-sdk
+    - name: Download plugin-sdk stable snapshot
       shell: pwsh
       run: |
         if (Test-Path "plugin-sdk") {
           Remove-Item -Recurse -Force "plugin-sdk"
         }
-        git clone --depth 1 https://github.com/DK22Pac/plugin-sdk.git plugin-sdk
+        # Скачиваем стабильный архив репозитория, избегая проблем с git checkout на винде
+        Invoke-WebRequest -Uri "https://github.com/DK22Pac/plugin-sdk/archive/refs/heads/master.zip" -OutFile "master.zip"
+        Expand-Archive -Path "master.zip" -DestinationPath "."
+        Rename-Item "plugin-sdk-master" "plugin-sdk"
+        Remove-Item "master.zip"
 
-    - name: Configure CMake
-      run: cmake -B build -S . -A Win32 -DCMAKE_CXX_FLAGS="/std:c++20"
+    - name: Configure CMake (C++20 Mode)
+      run: cmake -B build -S . -A Win32 -DCMAKE_CXX_STANDARD=20 -DCMAKE_CXX_STANDARD_REQUIRED=ON
 
     - name: Build Project
       run: cmake --build build --config Release
