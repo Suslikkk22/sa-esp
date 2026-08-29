@@ -16,14 +16,16 @@ jobs:
         repository: DK22Pac/plugin-sdk
         path: plugin-sdk
 
-    # Устанавливаем компоненты Visual Studio C++ (Desktop C++ workload)
-    - name: Setup MSBuild / Visual Studio
-      uses: microsoft/setup-msbuild@v2
+    # 1. Устанавливаем MSBuild и рабочую нагрузку C++ для Visual Studio
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
 
-    - name: Add MSVC Developer Command Prompt
+    # 2. Настраиваем окружение компилятора под архитектуру x86 (для GTA SA)
+    - name: Setup Visual Studio 2022
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x86
+        vsversion: 2022
 
     - name: Configure CMake
       run: cmake -S . -B build -G "Visual Studio 17 2022" -A Win32
