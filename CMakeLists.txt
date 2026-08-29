@@ -1,25 +1,23 @@
 cmake_minimum_required(VERSION 3.15)
-project(AmazingTreasureESP)
+project(AmazingTreasureESP CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+# Жестко требуем C++20, чтобы компилятор понимал современные фичи и не падал на concepts
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if (MSVC)
-    add_compile_options(/permissive- /Zc:twoPhase-)
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
-endif()
+# ASI плагин собирается как динамическая библиотека (DLL)
+add_library(AmazingTreasureESP SHARED
+    main.cpp
+)
 
-set(PLUGIN_SDK_DIR "${CMAKE_CURRENT_SOURCE_DIR}/plugin-sdk")
+# Меняем расширение с .dll на .asi и убираем префикс "lib"
+set_target_properties(AmazingTreasureESP PROPERTIES PREFIX "")
+set_target_properties(AmazingTreasureESP PROPERTIES SUFFIX ".asi")
 
-include_directories(${PLUGIN_SDK_DIR})
-include_directories(${PLUGIN_SDK_DIR}/shared)
-include_directories(${PLUGIN_SDK_DIR}/plugin_sa)
-include_directories(${PLUGIN_SDK_DIR}/game_sa)
-include_directories(${PLUGIN_SDK_DIR}/injector)
-
-add_library(AmazingTreasureESP SHARED main.cpp)
-
-set_target_properties(AmazingTreasureESP PROPERTIES
-    SUFFIX ".asi"
-    PREFIX ""
+# Подключаем все необходимые внутренние пути Plugin-SDK, чтобы компилятор видел CRGBA.h и прочее
+target_include_directories(AmazingTreasureESP PRIVATE
+    plugin-sdk
+    plugin-sdk/shared
+    plugin-sdk/injector
+    plugin-sdk/game_sa
 )
