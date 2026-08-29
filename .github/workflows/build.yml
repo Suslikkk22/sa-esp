@@ -16,17 +16,12 @@ jobs:
         move plugin-sdk-temp plugin-sdk
       shell: cmd
 
-    - name: Patch SafetyHook and Injector for Modern MSVC
+    - name: Patch SafetyHook Only
       run: |
-        REM 1. Патчим safetyhook заглушкой
         if exist plugin-sdk\safetyhook rmdir /s /q plugin-sdk\safetyhook
         mkdir plugin-sdk\safetyhook
         echo #pragma once > plugin-sdk\safetyhook\safetyhook.hpp
-
-        REM 2. Исправляем ошибку конвертации uintptr_t в hooking.hpp на строке 280
-        powershell -Command "(Get-Content plugin-sdk\injector\hooking.hpp) -replace 'return fn;', 'return injector::basic_memory_pointer<injector::address_manager::fn_mem_translator_nop>(fn);' | Set-Content plugin-sdk\injector\hooking.hpp"
-
-        echo "All patches applied successfully!"
+        echo "SafetyHook stub created!"
       shell: cmd
 
     - name: Setup MSBuild
