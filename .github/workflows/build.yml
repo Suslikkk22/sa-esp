@@ -15,7 +15,9 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Clone plugin-sdk and rollback to stable commit
+      shell: bash
       run: |
+        rm -rf plugin-sdk
         git clone https://github.com/DK22Pac/plugin-sdk.git plugin-sdk
         cd plugin-sdk
         git checkout 92b45070a93cf4f9d2d0c242b57563820252613d
