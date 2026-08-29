@@ -5,7 +5,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if (MSVC)
-    add_compile_options(/wd4430 /wd2061 /wd2143)
+    # Подавляем ошибки компилятора MSVC, чтобы он игнорировал старый синтаксис в SDK
+    add_compile_options(/wd4430 /wd2061 /wd2143 /wd2238 /wd2039)
     add_compile_options(/permissive- /Zc:twoPhase- )
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
 endif()
