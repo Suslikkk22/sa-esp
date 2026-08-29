@@ -1,4 +1,3 @@
-
 /*
  *  Injectors - Classes for making your hooking life easy
  *
@@ -12,23 +11,23 @@
  *  including commercial applications, and to alter it and redistribute it
  *  freely, subject to the following restrictions:
  *
- *     1. The origin of this software must not be misrepresented; you must not
- *     claim that you wrote the original software. If you use this software
- *     in a product, an acknowledgment in the product documentation would be
- *     appreciated but is not required.
+ *      1. The origin of this software must not be misrepresented; you must not
+ *      claim that you wrote the original software. If you use this software
+ *      in a product, an acknowledgment in the product documentation would be
+ *      appreciated but is not required.
  *
- *     2. Altered source versions must be plainly marked as such, and must not be
- *     misrepresented as being the original software.
+ *      2. Altered source versions must be plainly marked as such, and must not be
+ *      misrepresented as being the original software.
  *
- *     3. This notice may not be removed or altered from any source
- *     distribution.
+ *      3. This notice may not be removed or altered from any source
+ *      distribution.
  *
  */
 #pragma once
 #include "injector.hpp"
 #include <cassert>
 #include <functional>
-#include <memory>       // for std::shared_ptr
+#include <memory>        // for std::shared_ptr
 #include <list>
 #include "../shared/DynAddress.h"
 
@@ -56,11 +55,11 @@ namespace injector
     class scoped_basic : public scoped_base
     {
         private:
-            uint8_t            buf[bufsize] = { 0 }; // Saved content
+            uint8_t             buf[bufsize] = { 0 }; // Saved content
             memory_pointer_raw addr = nullptr; // Data saved from this address
-            size_t             size = 0; // Size saved
-            bool               saved = false; // Something saved?
-            bool               vp = false; // Virtual protect?
+            size_t              size = 0; // Size saved
+            bool                saved = false; // Something saved?
+            bool                vp = false; // Virtual protect?
 
         public:
             // Restore the previosly saved data
@@ -278,7 +277,7 @@ namespace injector
                 this->save(at, 4, vp);
                 uintptr_t original = ReadMemory<uintptr_t>(at, vp);
                 WriteMemory(at, cb.as_int(), vp);
-                return original;
+                return injector::basic_memory_pointer<injector::address_manager::fn_mem_translator_nop>(original);
             }
 
             memory_pointer_raw install(memory_pointer_tr at, memory_pointer_raw cb, bool vp = true)
@@ -321,9 +320,9 @@ namespace injector
             function_hooker_manager(function_hooker_manager&&) = delete;
 
             //
-            func_type_raw   original;               // Pointer to the original function we've replaced
-            assoc_type      assoc;                  // Association between owners of a hook and the hook (map)
-            bool            has_hooked = false;     // Is the hook already in place?
+            func_type_raw     original;             // Pointer to the original function we've replaced
+            assoc_type        assoc;                // Association between owners of a hook and the hook (map)
+            bool              has_hooked = false;   // Is the hook already in place?
 
             // Find assoc iterator for the content owned by 'owned'
             typename assoc_type::iterator find_assoc(const ToManage& owner)
@@ -354,7 +353,7 @@ namespace injector
 
                 // Functor for the original call
                 func_type original = [&manager](Args... args) -> Ret {
-                      return manager.original(args...);
+                     return manager.original(args...);
                 };
 
                 if(manager.assoc.size() == 1)
@@ -732,10 +731,6 @@ namespace injector
     {
         return add_static_hook(make_function_hook_dyn<T>(std::move(functor), addr));
     }
-
-    // TODO when we have access to C++14 add a make_function_hook, make_stdcall_function_hook, and so on
-    // the problem behind implement it with C++11 is that lambdas cannot be generic and the first param of a hook is a functor pointing
-    // to the previous call pointer
 
 #endif
 
