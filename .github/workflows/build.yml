@@ -19,11 +19,14 @@ jobs:
         )
       shell: cmd
 
-    - name: Purge Buggy SafetyHook
+    - name: Create SafetyHook Dummy to Fix Injector
       run: |
-        if exist plugin-sdk\plugin-sdk\safetyhook rmdir /s /q plugin-sdk\plugin-sdk\safetyhook
-        if exist plugin-sdk\safetyhook rmdir /s /q plugin-sdk\safetyhook
-        echo "SafetyHook has been successfully exterminated!"
+        REM Создаем папки, если их нет, и подсовываем пустой заголовок-заглушку
+        mkdir plugin-sdk\safetyhook 2>nul
+        mkdir plugin-sdk\plugin-sdk\safetyhook 2>nul
+        echo /* dummy */ > plugin-sdk\safetyhook\safetyhook.hpp
+        echo /* dummy */ > plugin-sdk\plugin-sdk\safetyhook\safetyhook.hpp
+        echo "Dummy SafetyHook created successfully!"
       shell: cmd
 
     - name: Setup MSBuild
