@@ -10,7 +10,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # Надежно скачиваем plugin-sdk через обычный git clone
     - name: Clone plugin-sdk
       run: git clone --depth 1 https://github.com/DK22Pac/plugin-sdk.git plugin-sdk
 
