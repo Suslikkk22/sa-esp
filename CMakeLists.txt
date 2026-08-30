@@ -6,25 +6,26 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Плагин для GTA SA (.asi)
+# Создаем ASI плагин
 add_library(AmazingTreasureESP MODULE
     main.cpp
 )
 
-# Выходной файл с расширением .asi
+# Переименовываем библиотеку в расширение .asi вместо .dll
 set_target_properties(AmazingTreasureESP PROPERTIES
     PREFIX ""
     SUFFIX ".asi"
 )
 
-# ОПРЕДЕЛЯЕМ ИГРУ: Задаем макрос GTASA
+# Задаем макрос GTASA, чтобы plugin-sdk знал, под какую версию игры идет компиляция
 target_compile_definitions(AmazingTreasureESP PRIVATE GTASA)
 
-# Подключаем все возможные пути plugin-sdk, включая базовые типы и математику
+# Подключаем ВСЕ необходимые пути к заголовочным файлам plugin-sdk, shared, математики и safetyhook
 target_include_directories(AmazingTreasureESP PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/plugin-sdk
     ${CMAKE_CURRENT_SOURCE_DIR}/plugin-sdk/shared
+    ${CMAKE_CURRENT_SOURCE_DIR}/plugin-sdk/shared/game_sa
     ${CMAKE_CURRENT_SOURCE_DIR}/plugin-sdk/plugin_sa
     ${CMAKE_CURRENT_SOURCE_DIR}/plugin-sdk/plugin_sa/game_sa
     ${CMAKE_CURRENT_SOURCE_DIR}/plugin-sdk/game_sa
@@ -32,7 +33,7 @@ target_include_directories(AmazingTreasureESP PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/plugin-sdk/safetyhook
 )
 
-# Флаги компилятора для MSVC
+# Дополнительные флаги для компилятора MSVC
 if(MSVC)
     target_compile_options(AmazingTreasureESP PRIVATE 
         /W3 
